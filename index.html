@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Online</title>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">TEMU</div>
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Productos</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="cart" onmouseover="showCart()" onmouseout="hideCart()">
+            <span>Carrito de compras</span>
+            <div class="cart-items" id="cartItems">
+                <ul id="cartItemList">
+                </ul>
+                <div class="cart-total" id="cartTotal">
+                    Total: $0
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="products" id="productList">
+        </section>
+    </main>
+    <button class="floating-button" onclick="handleBuyClick()">COMPRAR</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
+    <script>
+        let totalAmount = 0;
+
+        function showCart() {
+            document.getElementById('cartItems').style.display = 'block';
+        }
+
+        function hideCart() {
+            document.getElementById('cartItems').style.display = 'none';
+        }
+
+        function addToCart(productName, productImg, productPrice) {
+            const cartItemList = document.getElementById('cartItemList');
+            const item = document.createElement('li');
+            const price = parseFloat(productPrice.slice(1).replace(',', ''));
+            
+            const simplifiedName = productName.length > 30 ? productName.slice(0, 30) + '...' : productName;
+
+            item.innerHTML = `
+                <div>
+                    <img src="${productImg}" alt="${productName}">
+                    <span>${simplifiedName}</span>
+                </div>
+                <span>${productPrice}</span>
+                <button onclick="removeFromCart(this, ${price})">Eliminar</button>
+            `;
+            cartItemList.appendChild(item);
+
+            totalAmount += price;
+            document.getElementById('cartTotal').textContent = `Total: $${totalAmount.toLocaleString()}`;
+        }
+
+        function removeFromCart(button, price) {
+            const item = button.parentElement;
+            item.remove();
+            totalAmount -= price;
+            document.getElementById('cartTotal').textContent = `Total: $${totalAmount.toLocaleString()}`;
+        }
+
+        function handleBuyClick() {
+            Swal.fire({
+                title: "¡Gracias por tu compra!",
+                text: "Tu pedido ha sido recibido y será procesado pronto.",
+                icon: 'success',
+                showClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                    `
+                },
+                confirmButtonText: 'Aceptar'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                { name: 'Apple iPhone 15 (64 Gb)-Color Negro', img: 'https://co.tiendasishop.com/cdn/shop/files/iPhone15_Plus_Black_PDP_Image_Position-1__COES.jpg?v=1716841887&width=823', price: '$4,500,000' },
+                { name: 'Nike Jordans Retro 4 Color Blanco y Celeste', img: 'https://m.media-amazon.com/images/I/61SgPEad-hL._AC_SX500_.jpg', price: '$190,000' },
+                { name: 'Pantalones de Yoga Sin Costuras de Cintura Alta Ultra-Levantadores de Glúteos.', img: 'https://http2.mlstatic.com/D_NQ_NP_633166-CBT70375506542_072023-O.webp', price: '$33,608' },
+                { name: 'Linterna de proyección para niños, juguete educativo, regalo de Halloween y Navidad.', img: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/15c2f9fdaccfa787e9ac77eced859973.jpg?imageView2/2/w/800/q/70/format/webp', price: '$9,392' },
+                { name: '80% Poliéster Corrector de Postura para Hombres y Mujeres - Corrige la Joroba.', img: 'https://img.kwcdn.com/product/fancy/e99d1f51-bb6f-43eb-b21d-742190fe2a9d.jpg?imageView2/2/w/800/q/70/format/webp', price: '$19,822' },
+                { name: 'Cortapelos Recargable - Alimentado por USB, Removedor de Vello de Nariz, Oreja, Cejas y Facial.', img: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/79085e6d8fef208f62db7ee585a8e0ec.jpg?imageView2/2/w/800/q/70/format/webp', price: '$13,757' },
+                { name: 'Tira de Luz LED RGB3535 Vibrante de 5V con Conector USB y Control Remoto de Tres Botones.', img: 'https://img.kwcdn.com/product/fancy/cf73236f-151f-49d5-9e02-1b848e6ff267.jpg?imageView2/2/w/800/q/70/format/webp', price: '$5,868' },
+                { name: 'Sudadera con Capucha de Temática de Rana para Mascotas - Jersey de Punto Acogedor.', img: 'https://img.kwcdn.com/product/fancy/e7e7a344-6e8c-41da-9f9a-89c2582205a6.jpg?imageView2/2/w/800/q/70/format/webp', price: '$17,017' },
+            ];
+
+            const productList = document.getElementById('productList');
+
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+                
+                productDiv.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.price}</p>
+                    <button onclick="addToCart('${product.name}', '${product.img}', '${product.price}')">Agregar al carrito</button>
+                `;
+                
+                productList.appendChild(productDiv);
+            });
+        });
+    </script>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f9f9f9;
+                color: #333;
+            }
+    
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #ff6600;
+                color: white;
+                padding: 10px 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+    
+            header .logo {
+                font-size: 32px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }
+    
+            header nav ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                gap: 20px;
+            }
+    
+            header nav ul li a {
+                color: white;
+                text-decoration: none;
+                font-weight: bold;
+                transition: color 0.3s;
+            }
+    
+            header nav ul li a:hover {
+                color: #ffe6cc;
+            }
+    
+            header .cart {
+                position: relative;
+                cursor: pointer;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+            }
+    
+            header .cart span {
+                margin-right: 10px;
+                font-size: 18px;
+            }
+    
+            header .cart .cart-items {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 100%;
+                background-color: white;
+                color: black;
+                border: 2px solid #ff6600;
+                width: 320px;
+                max-height: 400px;
+                overflow-y: auto;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                border-radius: 10px;
+                padding: 10px;
+            }
+    
+            header .cart .cart-items ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+    
+            header .cart .cart-items ul li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 2px solid #eee;
+            }
+    
+            header .cart .cart-items ul li img {
+                width: 60px;
+                height: auto;
+                margin-right: 10px;
+                border-radius: 6px;
+            }
+    
+            header .cart .cart-items ul li span {
+                flex: 1;
+                font-size: 14px; /* Reduce font size for the product name */
+                white-space: nowrap; /* Prevent text wrapping */
+                overflow: hidden; /* Hide overflowed text */
+                text-overflow: ellipsis; /* Add ellipsis for overflowed text */
+            }
+    
+            header .cart .cart-items ul li button {
+                background-color: #ff3333;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: background-color 0.3s;
+            }
+    
+            header .cart .cart-items ul li button:hover {
+                background-color: #cc0000;
+            }
+    
+            .cart-total {
+                text-align: right;
+                padding: 15px;
+                font-weight: bold;
+                font-size: 18px;
+                border-top: 2px solid #ff6600;
+                margin-top: 10px;
+            }
+    
+            .products {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                padding: 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+    
+            .product {
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 15px;
+                text-align: center;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+    
+            .product:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+    
+            .product img {
+                max-width: 100%;
+                height: 150px;
+                object-fit: cover;
+                margin-bottom: 10px;
+                border-radius: 4px;
+            }
+    
+            .product h3 {
+                font-size: 20px;
+                margin: 10px 0;
+                color: #333;
+            }
+    
+            .product p {
+                font-size: 18px;
+                color: #ff6600;
+                margin: 10px 0;
+                font-weight: bold;
+            }
+    
+            .product button {
+                padding: 10px 18px;
+                background-color: #ff6600;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background-color 0.3s;
+            }
+    
+            .product button:hover {
+                background-color: #cc5200;
+            }
+    
+            .floating-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: #ff6600;
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 15px 30px;
+                font-size: 18px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                transition: background-color 0.3s, transform 0.3s;
+            }
+    
+            .floating-button:hover {
+                background-color: #cc5200;
+                transform: scale(1.05);
+            }
+        </style>
+</body>
+</html>
+
